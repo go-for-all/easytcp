@@ -87,6 +87,10 @@ func (l *Listener) Accept() (Tunnel, error) {
 	return Tunnel{conn: conn}, nil
 }
 
+func (l *Listener) Close() error {
+	return l.listener.Close()
+}
+
 func DialTimeout(address string, timeout time.Duration) (Tunnel, error) {
 	conn, err := net.DialTimeout("tcp", address, timeout)
 	if err != nil {
