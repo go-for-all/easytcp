@@ -75,6 +75,10 @@ func (t *Tunnel) WriteMessage(message []byte) error {
 	return nil
 }
 
+func (t *Tunnel) Close() error {
+	return t.conn.Close()
+}
+
 func (l *Listener) Accept() (Tunnel, error) {
 	conn, err := l.listener.Accept()
 	if err != nil {
