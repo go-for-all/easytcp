@@ -1,10 +1,25 @@
 Simplified TCP with automatic message framing.
 
+<hr>
+
+General guidelines for this repository:
+1. **License**: this code is AGPLv3-licensed; by using it, you agree to comply with the terms.
+2. **Issues**: only bug reports will be reviewed; do not submit support or feature requests.
+3. **Pull requests**: accepted only if they directly address a reported bug linked to an issue.
+
+<hr>
+
 # The Problem
-Go's standard `net.Dial` and `net.Listener.Accept` return a `net.Conn` in which you must pass an explicit size to read and write from. If you are using TCP for exchanging "messages", you have to manually handle length and backlogging to correctly parse your messages.
+Go's standard TCP returns `net.Conn` which requires you to pass an explicit data length to read.
+
+Thus, you have to manually handle length and backlogging to correctly parse exchanged messages.
 
 # The Solution
-`easytcp` simplifies this by providing `Tunnel.ReadMessage()` and `Tunnel.WriteMessage()`, analogous to `net.Conn.Read` and `net.Conn.Write` respectively but `Tunnel.ReadMessage()` is guaranteed to return exactly what you passed in to `Tunnel.WriteMessage()`. It automatically handles message length and blocks until the full message is received.
+easytcp's `Tunnel` with `ReadMessage()` and `WriteMessage()` to replace `conn.Read` and `conn.Write`.
+
+`Tunnel.ReadMessage()` is guaranteed to return exactly what you passed in to `Tunnel.WriteMessage()`.
+
+easytcp automatically handles message length and will block until the full message is received.
 
 # Usage
 #### Write a message:
@@ -29,9 +44,11 @@ func main() {
 	}
 }
 ```
-Note: message length must be greater than zero and less than 1 MiB (MaxMessageSize = 1 << 20).
+**Note: message must be non-empty and no more than than 1 MiB (MaxMessageSize = 1 << 20).**
 
-#### Reading a message:
+It is the caller's responsibility to chunk data into 1 MiB messages if necessary.
+
+#### Read a message:
 ```go
 package main
 
@@ -63,6 +80,3 @@ func main() {
 	}
 }
 ```
-
-# License
-All code in this repository is licensed under the GNU AGPLv3; you may not use this code unless you agree to the license.
