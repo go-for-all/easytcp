@@ -79,6 +79,14 @@ func (t *Tunnel) Close() error {
 	return t.conn.Close()
 }
 
+func (t *Tunnel) RemoteAddr() net.Addr {
+	return t.conn.RemoteAddr()
+}
+
+func (t *Tunnel) SetDeadline(ti time.Time) error {
+	return t.conn.SetDeadline(ti)
+}
+
 func (l *Listener) Accept() (Tunnel, error) {
 	conn, err := l.listener.Accept()
 	if err != nil {
